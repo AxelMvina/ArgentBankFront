@@ -8,6 +8,10 @@ import { Footer } from './Components/Footer/index.jsx';
 import { SignIn } from './Pages/Sign-In/Index.jsx';
 import { UserPage } from './Pages/User/Index.jsx';
 
+//redux
+// import { Provider } from 'react-redux';
+// import store from './Store/index.js';
+
 const App = () => (
   <Router>
     <Header />
@@ -24,6 +28,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    <App />
+    {/* <Provider store={store}> */}
+      <App />
+    {/* </Provider> */}
   </React.StrictMode>
 );
