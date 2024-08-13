@@ -6,6 +6,7 @@ import { Header } from './Components/Header/index.jsx';
 import { Home } from './Pages/Home/Index.jsx';
 import { Footer } from './Components/Footer/index.jsx';
 import { SignIn } from './Pages/Sign-In/Index.jsx';
+import { UserPage } from './Pages/User/Index.jsx';
 
 const App = () => (
   <Router>
@@ -13,6 +14,7 @@ const App = () => (
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/Login' element={<SignIn />} />
+      <Route path='/User' element={<UserPage/>} />
     </Routes>
     <Footer />
   </Router>
