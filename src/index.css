@@ -72,6 +72,10 @@ body {
   width: 200px;
 }
 
+.main-nav-item .fa-user-circle{
+  padding-right: 0.5em;
+}
+
 .signin-and-out{
   display: flex;
   align-items: center;
