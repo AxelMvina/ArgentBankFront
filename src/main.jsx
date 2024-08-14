@@ -7,10 +7,12 @@ import { Home } from './Pages/Home/Index.jsx';
 import { Footer } from './Components/Footer/index.jsx';
 import { SignIn } from './Pages/Sign-In/Index.jsx';
 import { UserPage } from './Pages/User/Index.jsx';
+import ProtectedRoute from './Components/ProtectedRoute'; // Importer le composant ProtectedRoute
+import Error from './Pages/Error/Index.jsx';
 
-//redux
-// import { Provider } from 'react-redux';
-// import store from './Store/index.js';
+// Redux
+import { Provider } from 'react-redux';
+import store from './Store/index.js';
 
 const App = () => (
   <Router>
@@ -18,7 +20,15 @@ const App = () => (
     <Routes>
       <Route path='/' element={<Home />} />
       <Route path='/Login' element={<SignIn />} />
-      <Route path='/User' element={<UserPage/>} />
+      <Route 
+        path='/User' 
+        element={
+          <ProtectedRoute>
+            <UserPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route path='*' element={<Error/>} />
     </Routes>
     <Footer />
   </Router>
@@ -28,8 +38,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <React.StrictMode>
-    {/* <Provider store={store}> */}
+    <Provider store={store}>
       <App />
-    {/* </Provider> */}
+    </Provider>
   </React.StrictMode>
 );
