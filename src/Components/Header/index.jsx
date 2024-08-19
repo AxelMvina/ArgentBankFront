@@ -30,7 +30,7 @@ export function Header() {
                     <>
                         <NavLink className="main-nav-item" to="/User">
                             <i className="fa fa-user-circle"></i>
-                            {user.userName} {/* Affiche le prénom de l'utilisateur */}
+                            {user.userName} {/* Affiche le pseudo de l'utilisateur */}
                         </NavLink>
                         <button
                             className="main-nav-item logout-button"

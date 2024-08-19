@@ -47,7 +47,7 @@ export const fetchUserProfile = createAsyncThunk(
                 throw new Error('Invalid response from the server');
             }
 
-            return response.data.body; // Supposons que le profil utilisateur est dans "body"
+            return response.data.body;
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 return rejectWithValue('Invalid fields');
@@ -88,7 +88,6 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.token = action.payload.token;
                 state.error = null;
-                // Vous pouvez initier l'appel de fetchUserProfile ici si nécessaire
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
