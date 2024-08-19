@@ -7,7 +7,7 @@ export function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { loading, error, user, token } = useSelector((state) => state.user);
+    const { loading, error } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
     const navigate = useNavigate();

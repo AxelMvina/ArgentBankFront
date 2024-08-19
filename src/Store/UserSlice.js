@@ -62,6 +62,39 @@ export const fetchUserProfile = createAsyncThunk(
     }
 );
 
+// Action pour mettre à jour le profil utilisateur
+export const updateUserProfile = createAsyncThunk(
+    'user/updateUserProfile',
+    async (profileData, { getState, rejectWithValue }) => {
+        try {
+            const state = getState();
+            const token = state.user.token;
+
+            const response = await axios.put('http://localhost:3001/api/v1/user/profile', profileData, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (!response.data || !response.data.body) {
+                throw new Error('Invalid response from the server');
+            }
+
+            return response.data.body;
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                return rejectWithValue('Invalid fields');
+            } else if (error.response && error.response.status === 500) {
+                return rejectWithValue('Internal server error');
+            } else if (error.response && error.response.status === 404) {
+                return rejectWithValue('Profile endpoint not found');
+            } else {
+                return rejectWithValue(error.message);
+            }
+        }
+    }
+);
+
 const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -104,6 +137,9 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.user = null;
                 state.error = action.payload || action.error.message;
+            })
+            .addCase(updateUserProfile.fulfilled, (state, action) => {
+                state.user = { ...state.user, ...action.payload };
             });
     },
 });
