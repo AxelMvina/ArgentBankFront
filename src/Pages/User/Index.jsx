@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BankAccount } from "../../Components/BankAccount";
-import { updateUserProfile } from '../../Store/UserSlice';
+import { updateUserProfile } from '../../Redux/slices/UserSlice';
 
 export function UserPage() {
     const user = useSelector((state) => state.user.user);

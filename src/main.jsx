@@ -12,7 +12,7 @@ import Error from './Pages/Error/Index.jsx';
 
 // Redux
 import { Provider } from 'react-redux';
-import store from './Store/index.js';
+import store from './Redux/stores/UserStore.js';
 
 const App = () => (
   <Router>
