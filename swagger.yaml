@@ -1,0 +1,382 @@
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/login:
+    post:
+      tags:
+        - User Module
+      summary: Login
+      description: API for Login
+      parameters:
+        - in: body
+          name: body
+          description: Login Payload
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Login Successfully
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for Signup
+      parameters:
+        - in: body
+          name: body
+          description: Signup Payload
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Signup Successfully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/profile:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for fetching a user profile
+      #produces:
+       # - application/json
+      responses:
+        '200':
+          description: User profile retrieved successully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for updating a user profile
+      parameters:
+        - in: body
+          name: body
+          description: Update user profile attributes
+          required: true
+          schema:
+            $ref: '#/definitions/UserProfile'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: User profile retrieved successully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+# Transactions part
+  paths:
+  user/accounts/{accountId}/transactions:
+    get:
+      tags:
+        - "User Transactions Module"
+      summary: "Returns a list of transactions."
+      description: "API for getting all transactions."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "L'ID du compte pour lequel récupérer les transactions"
+          required: true
+          type: "string"
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: "Transactions retrieved successfully"
+          schema:
+            $ref: "#/definitions/TransactionsResponse"
+        '400':
+          description: "Bad request. The query syntax is incorrect."
+        '401':
+          description: "Unauthorized. Authentication is required to access the resource."
+        '498':
+          description: "Token expired/invalid. The token has expired or is invalid."
+        '500':
+          description: "Internal Server Error"
+  /user/accounts/{accountId}/transactions/{transactionId}:
+    get:
+      tags:
+        - "User Transactions Module"
+      summary: "Returns details of a specific transaction."
+      description: "API for getting the details of a specific transaction."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "L'ID du compte auquel la transaction est associée"
+          required: true
+          type: "string"
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction à récupérer"
+          required: true
+          type: "string"
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: "Transaction retrieved successfully"
+          schema:
+            $ref: "#/definitions/Transaction"
+        '400':
+          description: "Bad request. The query syntax is incorrect."
+        '401':
+          description: "Unauthorized. Authentication is required to access the resource."
+        '404':
+          description: "Transaction not found. The specified transaction does not exist."
+        '498':
+          description: "Token expired/invalid. The token has expired or is invalid."
+        '500':
+          description: "Internal Server Error"
+  /user/accounts/{accountId}/transactions/{transactionId}/category:
+    post:
+      tags:
+        - "User Transactions Module"
+      summary: "Create or add a category to a specific transaction."
+      description: "API for creating or adding a category to a specific transaction."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "L'ID du compte auquel la transaction est associée"
+          required: true
+          type: "string"
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction pour laquelle la catégorie est ajoutée"
+          required: true
+          type: "string"
+        - name: "category"
+          in: "body"
+          description: "La catégorie à créer ou à ajouter à la transaction"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - Bearer: []
+      responses:
+        '201':
+          description: "Category created or added successfully"
+        '400':
+          description: "Bad request. The query syntax is incorrect."
+        '401':
+          description: "Unauthorized. Authentication is required to access the resource."
+        '404':
+          description: "Transaction not found. The specified transaction does not exist."
+        '498':
+          description: "Token expired/invalid. The token has expired or is invalid."
+        '500':
+          description: "Internal Server Error"
+
+  /user/accounts/{accountId}/transactions/{transactionId}/notes:
+    post:
+      tags:
+        - "User Transactions Module"
+      summary: "Create or add notes to a specific transaction."
+      description: "API for creating or adding notes to a specific transaction."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "L'ID du compte auquel la transaction est associée"
+          required: true
+          type: "string"
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction pour laquelle les notes sont ajoutées"
+          required: true
+          type: "string"
+        - name: "notes"
+          in: "body"
+          description: "Les notes à créer ou à ajouter à la transaction"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - Bearer: []
+      responses:
+        '201':
+          description: "Notes created or added successfully"
+        '400':
+          description: "Bad request. The query syntax is incorrect."
+        '401':
+          description: "Unauthorized. Authentication is required to access the resource."
+        '404':
+          description: "Transaction not found. The specified transaction does not exist."
+        '498':
+          description: "Token expired/invalid. The token has expired or is invalid."
+        '500':
+          description: "Internal Server Error"
+
+    put:
+      tags:
+        - "User Transactions Module"
+      summary: "Update the notes of a specific transaction."
+      description: "API for updating the notes associated with a specific transaction."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "accountId"
+          in: "path"
+          description: "L'ID du compte auquel la transaction est associée"
+          required: true
+          type: "string"
+        - name: "transactionId"
+          in: "path"
+          description: "L'ID de la transaction pour laquelle les notes sont mises à jour"
+          required: true
+          type: "string"
+        - name: "notes"
+          in: "body"
+          description: "Les nouvelles notes pour la transaction"
+          required: true
+          schema:
+            type: "string"
+      security:
+        - Bearer: []
+      responses:
+        '200':
+          description: "Notes updated successfully"
+        '400':
+          description: "Bad request. The query syntax is incorrect."
+        '401':
+          description: "Unauthorized. Authentication is required to access the resource."
+        '404':
+          description: "Transaction or notes not found. The specified transaction or notes do not exist."
+        '498':
+          description: "Token expired/invalid. The token has expired or is invalid."
+        '500':
+          description: "Internal Server Error"
+  
+
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  User:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+      firstName:
+        type: string
+        description: user first name
+      lastName:
+        type: string
+        description: user last name
+      userName:
+        type: string
+        description: user public name
+  Login:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          id:
+            type: string
+          email:
+            type: string
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+  UserProfile:
+    type: object
+    properties:
+      userName:
+        type: string
+# transactions part
+  Transaction:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "L'identifiant unique de la transaction"
+      date:
+        type: "string"
+        format: "date"
+        description: "La date de la transaction"
+      amount:
+        type: "number"
+        format: "double"
+        description: "Le montant de la transaction"
+      description:
+        type: "string"
+        description: "Description de la transaction"
+      balance:
+        type: "number"
+        format: "double"
+        description: "Le solde du compte après la transaction"
+      category:
+        type: "string"
+        description: "La catégorie de la transaction, par exemple 'Alimentation', 'Loisirs', etc."
+      notes:
+        type: "string"
+        description: "Les notes associées à la transaction"
