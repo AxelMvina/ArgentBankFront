@@ -69,7 +69,7 @@ paths:
        # - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile retrieved successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
@@ -94,65 +94,83 @@ paths:
         - application/json
       responses:
         '200':
-          description: User profile retrieved successully
+          description: User profile updated successfully
           schema:
             $ref: '#/definitions/ApiResponse'
         '400':
           description: Invalid Fields
         '500':
           description: Internal Server Error
-# Transactions part
-  paths:
-  /user/accounts/{accountId}/transactions:
-    get:
+  /user/transactions:
+    post:
       tags:
         - "User Transactions Module"
-      summary: "Returns a list of transactions."
-      description: "API for getting all transactions."
+      summary: "Returns a list of transactions for a user's multiple accounts."
+      description: >
+        API to retrieve all transactions associated with a user's multiple accounts.
+      consumes:
+        - "application/json"
       produces:
         - "application/json"
       parameters:
-        - name: "accountId"
-          in: "path"
-          description: "L'ID du compte pour lequel récupérer les transactions"
+        - in: "body"
+          name: "body"
+          description: >
+            Provide an array of `accountIds` to filter by specific accounts.
           required: true
-          type: "string"
-      security:
-        - Bearer: []
+          schema:
+            type: "object"
+            properties:
+              accountIds:
+                type: "array"
+                items:
+                  type: "string"
+                description: "Optional list of account IDs to filter transactions by."
       responses:
         '200':
-          description: "Transactions retrieved successfully"
+          description: "Returns a list of transactions."
           schema:
-            $ref: "#/definitions/TransactionsResponse"
+            type: "object"
+            properties:
+              transactions:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Transaction"
+              transactionId:
+                type: "string"
+                description: "The unique identifier of the created transaction (if applicable)."
         '400':
           description: "Bad request. The query syntax is incorrect."
         '401':
           description: "Unauthorized. Authentication is required to access the resource."
-        '498':
-          description: "Token expired/invalid. The token has expired or is invalid."
         '500':
           description: "Internal Server Error"
-  /user/accounts/{accountId}/transactions/{transactionId}:
-    get:
+  /user/transactions/{transactionId}:
+    post:
       tags:
         - "User Transactions Module"
       summary: "Returns details of a specific transaction."
-      description: "API for getting the details of a specific transaction."
+      description: "API for retrieving the details of a specific transaction for a user."
+      consumes:
+        - "application/json"
       produces:
         - "application/json"
       parameters:
-        - name: "accountId"
-          in: "path"
-          description: "L'ID du compte auquel la transaction est associée"
-          required: true
-          type: "string"
         - name: "transactionId"
           in: "path"
-          description: "L'ID de la transaction à récupérer"
+          description: "The ID of the transaction."
           required: true
           type: "string"
-      security:
-        - Bearer: []
+        - in: "body"
+          name: "body"
+          description: "Account ID for retrieving the transaction."
+          required: true
+          schema:
+            type: "object"
+            properties:
+              accountId:
+                type: "string"
+                description: "The ID of the account to which the transaction is associated."
       responses:
         '200':
           description: "Transaction retrieved successfully"
@@ -164,144 +182,59 @@ paths:
           description: "Unauthorized. Authentication is required to access the resource."
         '404':
           description: "Transaction not found. The specified transaction does not exist."
-        '498':
-          description: "Token expired/invalid. The token has expired or is invalid."
         '500':
           description: "Internal Server Error"
-  /user/accounts/{accountId}/transactions/{transactionId}/category:
-    post:
-      tags:
-        - "User Transactions Module"
-      summary: "Create or add a category to a specific transaction."
-      description: "API for creating or adding a category to a specific transaction."
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "accountId"
-          in: "path"
-          description: "L'ID du compte auquel la transaction est associée"
-          required: true
-          type: "string"
-        - name: "transactionId"
-          in: "path"
-          description: "L'ID de la transaction pour laquelle la catégorie est ajoutée"
-          required: true
-          type: "string"
-        - name: "category"
-          in: "body"
-          description: "La catégorie à créer ou à ajouter à la transaction"
-          required: true
-          schema:
-            type: "string"
-      security:
-        - Bearer: []
-      responses:
-        '201':
-          description: "Category created or added successfully"
-        '400':
-          description: "Bad request. The query syntax is incorrect."
-        '401':
-          description: "Unauthorized. Authentication is required to access the resource."
-        '404':
-          description: "Transaction not found. The specified transaction does not exist."
-        '498':
-          description: "Token expired/invalid. The token has expired or is invalid."
-        '500':
-          description: "Internal Server Error"
-
-  /user/accounts/{accountId}/transactions/{transactionId}/notes:
-    post:
-      tags:
-        - "User Transactions Module"
-      summary: "Create or add notes to a specific transaction."
-      description: "API for creating or adding notes to a specific transaction."
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - name: "accountId"
-          in: "path"
-          description: "L'ID du compte auquel la transaction est associée"
-          required: true
-          type: "string"
-        - name: "transactionId"
-          in: "path"
-          description: "L'ID de la transaction pour laquelle les notes sont ajoutées"
-          required: true
-          type: "string"
-        - name: "notes"
-          in: "body"
-          description: "Les notes à créer ou à ajouter à la transaction"
-          required: true
-          schema:
-            type: "string"
-      security:
-        - Bearer: []
-      responses:
-        '201':
-          description: "Notes created or added successfully"
-        '400':
-          description: "Bad request. The query syntax is incorrect."
-        '401':
-          description: "Unauthorized. Authentication is required to access the resource."
-        '404':
-          description: "Transaction not found. The specified transaction does not exist."
-        '498':
-          description: "Token expired/invalid. The token has expired or is invalid."
-        '500':
-          description: "Internal Server Error"
-
     put:
       tags:
         - "User Transactions Module"
-      summary: "Update the notes of a specific transaction."
-      description: "API for updating the notes associated with a specific transaction."
+      summary: "Update or delete the notes and category of a specific transaction."
+      description: "API for updating or deleting the notes and category associated with a specific transaction. To delete, send empty strings for notes and category."
       consumes:
         - "application/json"
       produces:
         - "application/json"
       parameters:
-        - name: "accountId"
-          in: "path"
-          description: "L'ID du compte auquel la transaction est associée"
-          required: true
-          type: "string"
         - name: "transactionId"
           in: "path"
-          description: "L'ID de la transaction pour laquelle les notes sont mises à jour"
+          description: "The ID of the transaction to be updated"
           required: true
           type: "string"
-        - name: "notes"
-          in: "body"
-          description: "Les nouvelles notes pour la transaction"
+        - in: "body"
+          name: "body"
+          description: "The new values for notes and category. Send empty strings to delete them."
           required: true
           schema:
-            type: "string"
-      security:
-        - Bearer: []
+            type: "object"
+            properties:
+              accountId:
+                type: "string"
+                description: "The ID of the account associated with the transaction."
+              notes:
+                type: "string"
+                description: "The new notes for the transaction. Send an empty string to delete."
+              category:
+                type: "string"
+                description: "The new category for the transaction. Send an empty string to delete."
       responses:
         '200':
-          description: "Notes updated successfully"
+          description: "Transaction updated successfully"
+          schema:
+            $ref: "#/definitions/Transaction"
         '400':
           description: "Bad request. The query syntax is incorrect."
         '401':
           description: "Unauthorized. Authentication is required to access the resource."
         '404':
-          description: "Transaction or notes not found. The specified transaction or notes do not exist."
-        '498':
-          description: "Token expired/invalid. The token has expired or is invalid."
+          description: "Transaction not found. The specified transaction does not exist."
         '500':
           description: "Internal Server Error"
-  
 
 securityDefinitions:
   Bearer:
     type: apiKey
     name: Authorization
     in: header
+
 definitions:
   User:
     properties:
@@ -352,31 +285,34 @@ definitions:
     properties:
       userName:
         type: string
-# transactions part
   Transaction:
     type: "object"
     properties:
-      id:
+      transactionId:
         type: "string"
-        description: "L'identifiant unique de la transaction"
+        description: "The unique identifier of the transaction"
+      accountId:
+        type: "string"
+        description: "The unique identifier of the account associated with the transaction"
       date:
         type: "string"
-        format: "date"
-        description: "La date de la transaction"
+        format: "date-time"
+        description: "The date of the transaction"
       amount:
         type: "number"
         format: "double"
-        description: "Le montant de la transaction"
+        description: "The amount of the transaction"
       description:
         type: "string"
-        description: "Description de la transaction"
+        description: "Description of the transaction"
       balance:
         type: "number"
         format: "double"
-        description: "Le solde du compte après la transaction"
+        description: "The account balance after the transaction"
       category:
         type: "string"
-        description: "La catégorie de la transaction, par exemple 'Alimentation', 'Loisirs', etc."
+        description: "The category of the transaction, e.g., 'Food', 'Entertainment'. An empty string means the category is deleted."
       notes:
         type: "string"
-        description: "Les notes associées à la transaction"
+        description: "The notes associated with the transaction. An empty string means the notes are deleted."
+  
