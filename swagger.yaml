@@ -103,7 +103,7 @@ paths:
           description: Internal Server Error
 # Transactions part
   paths:
-  user/accounts/{accountId}/transactions:
+  /user/accounts/{accountId}/transactions:
     get:
       tags:
         - "User Transactions Module"
