@@ -25,7 +25,6 @@ export function LoginForm() {
                 await dispatch(fetchUserProfile()); // Récupérer le profil utilisateur après la connexion
                 setEmail('');
                 setPassword('');
-                console.log('Navigating to home page...');
                 navigate('/User');
             }
         } catch (err) {
