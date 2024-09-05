@@ -1,7 +1,7 @@
 import { FeatureItem } from "../../Components/FeatureItem";
-import FeatureImg1 from "../../assets/img/icon-chat.png";
-import FeatureImg2 from "../../assets/img/icon-money.png";
-import FeatureImg3 from "../../assets/img/icon-security.png"
+import FeatureImg1 from "../../assets/img/icon-chat.webp";
+import FeatureImg2 from "../../assets/img/icon-money.webp";
+import FeatureImg3 from "../../assets/img/icon-security.webp"
 
 export function Home() {
     return (

@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate } from "react-router-dom";
 import { logout } from "../../Redux/slices/UserSlice";
-import HeaderImg from "../../assets/img/argentBankLogo.png";
+import HeaderImg from "../../assets/img/argentBankLogo.webp";
 
 export function Header() {
     const dispatch = useDispatch();

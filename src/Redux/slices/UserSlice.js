@@ -18,16 +18,21 @@ export const loginUser = createAsyncThunk(
 
             return { token };
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                return rejectWithValue('Invalid fields');
+            if (error.response && error.response.status === 401) {
+                // Retournez un message personnalisé si l'authentification échoue
+                return rejectWithValue('Email ou mot de passe incorrect. Veuillez réessayer.');
+            } else if (error.response && error.response.status === 400) {
+                return rejectWithValue('Champs invalides. Veuillez vérifier vos informations.');
             } else if (error.response && error.response.status === 500) {
-                return rejectWithValue('Internal server error');
+                return rejectWithValue('Erreur interne du serveur. Veuillez réessayer plus tard.');
             } else {
                 return rejectWithValue(error.message);
             }
         }
     }
 );
+
+
 
 // Action pour récupérer le profil utilisateur après la connexion
 export const fetchUserProfile = createAsyncThunk(
@@ -49,12 +54,13 @@ export const fetchUserProfile = createAsyncThunk(
 
             return response.data.body;
         } catch (error) {
-            if (error.response && error.response.status === 400) {
-                return rejectWithValue('Invalid fields');
+            if (error.response && error.response.status === 401) {
+                // Retournez un message personnalisé si l'authentification échoue
+                return rejectWithValue('Email ou mot de passe incorrect. Veuillez réessayer.');
+            } else if (error.response && error.response.status === 400) {
+                return rejectWithValue('Champs invalides. Veuillez vérifier vos informations.');
             } else if (error.response && error.response.status === 500) {
-                return rejectWithValue('Internal server error');
-            } else if (error.response && error.response.status === 404) {
-                return rejectWithValue('Profile endpoint not found');
+                return rejectWithValue('Erreur interne du serveur. Veuillez réessayer plus tard.');
             } else {
                 return rejectWithValue(error.message);
             }
@@ -126,7 +132,7 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.user = null;
                 state.token = null;
-                state.error = action.payload || action.error.message;
+                state.error =  action.payload;
             })
             .addCase(fetchUserProfile.fulfilled, (state, action) => {
                 state.user = action.payload;
@@ -136,7 +142,7 @@ const userSlice = createSlice({
             .addCase(fetchUserProfile.rejected, (state, action) => {
                 state.loading = false;
                 state.user = null;
-                state.error = action.payload || action.error.message;
+                state.error = action.payload;
             })
             .addCase(updateUserProfile.fulfilled, (state, action) => {
                 state.user = { ...state.user, ...action.payload };
